@@ -13,7 +13,7 @@ builder.Services.AddAuthentication(BasicDefaults.AuthenticationScheme)
         {
             OnValidateCredentials = context =>
             {
-                // Hier können Sie Ihre eigene Logik zur Überprüfung der Anmeldeinformationen implementieren
+                // Hier kï¿½nnen Sie Ihre eigene Logik zur ï¿½berprï¿½fung der Anmeldeinformationen implementieren
                 if (context.Username == "username" && context.Password == "password")
                 {
                     context.Principal = new System.Security.Claims.ClaimsPrincipal();
@@ -46,13 +46,8 @@ app.UseRouting();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
-app.UseAuthentication();
 app.UseAuthorization();
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers();
-});
-
-app.MapRazorPages();
+app.UseAuthentication();
+app.MapRazorPages().RequireAuthorization();
 
 app.Run();
