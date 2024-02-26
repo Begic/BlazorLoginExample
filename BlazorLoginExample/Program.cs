@@ -5,29 +5,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
-builder.Services.AddAuthentication(BasicDefaults.AuthenticationScheme)
-    .AddBasic(options =>
+builder.Services
+    .AddAuthentication(BasicDefaults.AuthenticationScheme)
+    .AddBasic<BasicUserValidationService>(options =>
     {
-        options.Realm = "My Realm";
-        options.Events = new BasicEvents()
-        {
-            OnValidateCredentials = context =>
-            {
-                // Hier k�nnen Sie Ihre eigene Logik zur �berpr�fung der Anmeldeinformationen implementieren
-                if (context.Username == "username" && context.Password == "password")
-                {
-                    context.Principal = new System.Security.Claims.ClaimsPrincipal();
-                    context.Success();
-                }
-                else
-                {
-                    context.NoResult();
-                }
-
-                return Task.CompletedTask;
-            }
-        };
-    });
+        options.Realm = "My App";
+    }); // Service Registrieren 
 
 var app = builder.Build();
 
@@ -46,8 +29,18 @@ app.UseRouting();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
+app.UseAuthentication(); //Reihenfolge beachten
 app.UseAuthorization();
-app.UseAuthentication();
-app.MapRazorPages().RequireAuthorization();
+
+app.MapRazorPages()
+    .RequireAuthorization(); // ACHTUNG hier muss es aktiviert werden.
 
 app.Run();
+
+public class BasicUserValidationService : IBasicUserValidationService
+{
+    public Task<bool> IsValidAsync(string username, string password)
+    {
+        return Task.FromResult(password == "password"); // Hier Passwort abfangen, und kontrollieren.
+    }
+}
