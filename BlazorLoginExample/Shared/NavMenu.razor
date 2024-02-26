@@ -4,7 +4,7 @@
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand">Hello @state.User.Identity.Name</a>
-        <a onclick="@Logout()">Logout</a>
+        <a href="http://log:out@localhost:7128">Logout</a>
     </div>
 </div>
 
@@ -30,10 +30,5 @@
     protected override async Task OnInitializedAsync()
     {
         state = await Provider.GetAuthenticationStateAsync();
-    }
-
-    private void Logout()
-    {
-        
     }
 }
